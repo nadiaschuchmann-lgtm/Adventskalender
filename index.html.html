@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Häkel-Adventskalender 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2ee;--pine:#1e3b34;--berry:#b5233f;--gold:#e3a62f;--ink:#1b2523;--line:#c9d4cc}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.6 Figtree,system-ui,sans-serif}
+h1,h2{font-family:"Young Serif",Georgia,serif;font-weight:400;line-height:1.1;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--berry);outline-offset:3px}
+.wrap{max-width:62rem;margin:0 auto;padding:0 1.25rem}
+header{background:var(--pine);color:#fff;padding:3.5rem 0 3rem}
+header h1{font-size:clamp(2.4rem,7vw,4.5rem);max-width:14ch}
+header p{max-width:36rem;margin:1.25rem 0 0;color:#dbe6df}
+.btn{display:inline-block;background:var(--gold);color:var(--ink);font-weight:600;text-decoration:none;padding:.8rem 1.4rem;border-radius:2rem;border:0;font:600 1rem Figtree,sans-serif;cursor:pointer}
+.btn.alt{background:transparent;border:2px solid currentColor}
+.btn[aria-disabled=true]{opacity:.5;pointer-events:none}
+header .btn{margin-top:1.75rem}
+main{padding:3rem 0 2rem}
+main h2{font-size:1.9rem;margin-bottom:.4rem}
+.sub{margin:0 0 1.75rem;color:#4b5a55}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(7.5rem,1fr));gap:.9rem;list-style:none;padding:0;margin:0}
+.door{width:100%;aspect-ratio:1;display:grid;place-items:center;border:0;cursor:pointer;font:400 2.2rem "Young Serif",Georgia,serif;border-radius:.4rem;position:relative;color:#fff}
+.door::after{content:"";position:absolute;inset:.45rem;border:2px dashed rgba(255,255,255,.65);border-radius:.25rem;pointer-events:none}
+.door.open{background:var(--berry)}
+.door.open:nth-child(3n+2){background:var(--pine)}
+.door.open:nth-child(3n){background:#c98a14}
+.door.locked{background:#dfe7e1;color:#7d8c85}
+.door.locked::after{border-color:#b4c2ba}
+.door:hover.open{transform:translateY(-3px)}
+.door{transition:transform .15s}
+.bundle{margin-top:3rem;background:#fff;border:2px dashed var(--line);border-radius:.5rem;padding:1.75rem}
+.bundle h2{font-size:1.5rem}
+.bundle p{margin:.5rem 0 1.25rem}
+footer{padding:2rem 0 3rem;color:#4b5a55;font-size:.95rem}
+footer a{margin-right:1rem}
+dialog{border:0;border-radius:.6rem;padding:1.75rem;max-width:30rem;width:calc(100% - 2rem);background:#fff;color:var(--ink)}
+dialog::backdrop{background:rgba(20,35,30,.65)}
+dialog h2{font-size:1.6rem;margin-bottom:.75rem}
+dialog .acts{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.25rem}
+dialog .btn.alt{color:var(--pine)}
+@media (prefers-reduced-motion:reduce){.door{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Häkel-Adventskalender 2026</h1>
+    <p>24 kleine Projekte, jedes in 30 bis 60 Minuten gehäkelt. Jeden Tag öffnet sich ein neues Türchen mit Video und PDF-Anleitung.</p>
+    <a class="btn" href="#tuerchen">Zu den Türchen</a>
+  </div>
+</header>
+
+<main class="wrap" id="tuerchen">
+  <h2>Deine 24 Türchen</h2>
+  <p class="sub">Ab dem 1. Dezember öffnet sich jeden Tag ein Türchen. Tippe auf ein offenes Türchen für Video und Anleitung.</p>
+  <ul class="grid" id="grid"></ul>
+
+  <section class="bundle">
+    <h2>Alle 24 Anleitungen als Paket</h2>
+    <p>Du bekommst alle PDFs auf einmal und sparst gegenüber den Einzelkäufen.</p>
+    <a class="btn" id="bundleBtn" href="#" target="_blank" rel="noopener">Komplettpaket kaufen</a>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a>
+    <a id="igLink" href="#" target="_blank" rel="noopener">Instagram</a><a id="ttLink" href="#" target="_blank" rel="noopener">TikTok</a>
+  </div>
+</footer>
+
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <h2 id="dlgTitle"></h2>
+  <p id="dlgText"></p>
+  <div class="acts" id="dlgActs"></div>
+</dialog>
+
+<script>
+/* ===== HIER ANPASSEN ===== */
+const CONFIG = {
+  year: 2026,
+  month: 12,                       // Dezember
+  bundleUrl: "",                   // Payhip/Gumroad-Link zum Komplettpaket
+  instagramUrl: "",                // dein Instagram-Profil
+  tiktokUrl: "",                   // dein TikTok-Profil
+  // Optional: nur für Tests, z. B. ?preview=24 in der Adresszeile öffnet Türchen 1 bis 24
+};
+/* Pro Türchen: Titel, kurze Beschreibung, Video-Link (Instagram/TikTok), Kauf-Link zur PDF */
+const DOORS = {
+  1: { title: "Türchen 1", text: "", videoUrl: "", buyUrl: "" },
+  2: { title: "Türchen 2", text: "", videoUrl: "", buyUrl: "" }
+  /* 3 bis 24 nach demselben Muster ergänzen. Fehlende Türchen bekommen automatisch einen Platzhalter. */
+};
+/* ========================= */
+
+const grid = document.getElementById("grid");
+const dlg = document.getElementById("dlg");
+const params = new URLSearchParams(location.search);
+const preview = parseInt(params.get("preview"), 10);
+
+function unlockedUpTo() {
+  if (!isNaN(preview)) return preview;
+  const now = new Date();
+  const start = new Date(CONFIG.year, CONFIG.month - 1, 1);
+  if (now < start) return 0;
+  if (now.getFullYear() > CONFIG.year || now.getMonth() + 1 > CONFIG.month) return 24;
+  return Math.min(24, now.getDate());
+}
+const open = unlockedUpTo();
+
+function link(label, url, alt) {
+  const a = document.createElement("a");
+  a.className = "btn" + (alt ? " alt" : "");
+  a.textContent = label;
+  if (url) { a.href = url; a.target = "_blank"; a.rel = "noopener"; }
+  else { a.href = "#"; a.setAttribute("aria-disabled", "true"); }
+  return a;
+}
+
+function show(n) {
+  const d = DOORS[n] || { title: "Türchen " + n, text: "", videoUrl: "", buyUrl: "" };
+  const acts = document.getElementById("dlgActs");
+  acts.replaceChildren();
+  document.getElementById("dlgTitle").textContent = d.title;
+  if (n > open) {
+    document.getElementById("dlgText").textContent = "Dieses Türchen öffnet sich am " + n + ". Dezember.";
+  } else {
+    document.getElementById("dlgText").textContent = d.text || "Video und Anleitung findest du hier.";
+    acts.append(link("Video ansehen", d.videoUrl, false));
+    acts.append(link("PDF-Anleitung kaufen", d.buyUrl, false));
+  }
+  const close = document.createElement("button");
+  close.className = "btn alt";
+  close.textContent = "Schließen";
+  close.onclick = () => dlg.close();
+  acts.append(close);
+  dlg.showModal();
+}
+
+for (let n = 1; n <= 24; n++) {
+  const li = document.createElement("li");
+  const b = document.createElement("button");
+  const isOpen = n <= open;
+  b.className = "door " + (isOpen ? "open" : "locked");
+  b.textContent = n;
+  b.setAttribute("aria-label", "Türchen " + n + (isOpen ? "" : ", noch gesperrt"));
+  b.onclick = () => show(n);
+  li.append(b);
+  grid.append(li);
+}
+
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+
+function setLink(id, url) {
+  const a = document.getElementById(id);
+  if (url) a.href = url; else a.hidden = true;
+}
+setLink("igLink", CONFIG.instagramUrl);
+setLink("ttLink", CONFIG.tiktokUrl);
+const bb = document.getElementById("bundleBtn");
+if (CONFIG.bundleUrl) bb.href = CONFIG.bundleUrl; else bb.setAttribute("aria-disabled", "true");
+</script>
+</body>
+</html>
